@@ -1,0 +1,41 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+/x64/Debug/*.pdb
+/TietoEvryTask/x64/Debug/*.idb
+/TietoEvryTask/*.user
+/TietoEvryTask/x64/Debug/TietoEvryTask.tlog/*.tlog
+/TietoEvryTask/x64/Debug/TietoEvryTask.tlog/*.lastbuildstate
+/TietoEvryTask/x64/Debug/*.recipe
+/TietoEvryTask/x64/Debug/*.ilk
+/TietoEvryTask/x64/Debug/*.log
+/TietoEvryTask/x64/Debug/*.pdb
