@@ -4,6 +4,7 @@
 #include <thread>
 #include "FileContent.h"
 #include <mutex>
+#include <vector>
 
 class LogSystem
 {

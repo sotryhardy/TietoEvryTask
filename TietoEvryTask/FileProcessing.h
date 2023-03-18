@@ -2,7 +2,9 @@
 #include <string>
 #include <mutex>
 #include "LogSystem.h"
-typedef unsigned int uint; 
+#include <atomic>
+
+typedef std::atomic_uint uint;
 
 class FileProcessing
 {
@@ -19,4 +21,8 @@ private:
 
     LogSystem* _logSystem;
     std::mutex _mutex;
+
+private:
+
+
 };
