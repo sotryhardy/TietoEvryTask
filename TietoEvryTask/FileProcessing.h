@@ -22,7 +22,4 @@ private:
     LogSystem* _logSystem;
     std::mutex _mutex;
 
-private:
-
-
 };
