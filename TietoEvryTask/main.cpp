@@ -17,17 +17,23 @@ int main(int argc, char* argv[])
     //.substr(entry.path().string().find_last_of("/\\") + 1)
     std::cmatch result;
 
-    std::string str ("email@host.ry");
 
-    FileProcessing fileProcessing;
+    std::string resultFileName = "aboba_result.txt";
+    std::string logFileName = "aboba_log.log";
+
+    LogSystem* logSystem = new LogSystem(resultFileName, logFileName);
+
+    FileProcessing fileProcessing(logSystem);
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(start_directory))
         //if (std::regex_match(entry.path().string().c_str(), result, regular))
         //{
           //  std::cout << entry.path().string() << std::endl;
 
-            fileProcessing.StartProcessing("#include <map>", entry.path().string());
+            fileProcessing.StartProcessing(" ", entry.path().string());
         //}
+    logSystem->MakeLogFile();
+    logSystem->MakeResultFile();
     system("PAUSE");
     return 0;
 }

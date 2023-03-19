@@ -1,8 +1,10 @@
 #pragma once
-#include <map>
+
 #include <string>
+#include <vector>
 
 class FileContent
 {
-    std::map<int, std::string> lineContent;
+public:
+    std::vector<std::pair <int, std::string>> lineContent;
 };

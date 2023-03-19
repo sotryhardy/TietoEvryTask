@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <mutex>
 #include "LogSystem.h"
 #include <atomic>
 
@@ -20,6 +19,5 @@ private:
     uint _patterns = 0;
 
     LogSystem* _logSystem;
-    std::mutex _mutex;
 
 };

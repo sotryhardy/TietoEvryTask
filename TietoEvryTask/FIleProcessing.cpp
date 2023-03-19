@@ -15,7 +15,6 @@ void FileProcessing::StartProcessing(std::string pattern, std::string path)
     file.open(path, std::ios::in);
     
     if (!file) {
-        std::cout << "No such file" << std::endl;
         return;
     }
 
@@ -30,12 +29,14 @@ void FileProcessing::StartProcessing(std::string pattern, std::string path)
             if (!this_same_file)
                 _withPattern++;
 
-            _logSystem->NewLog(
-                std::this_thread::get_id(),
-                path.substr(path.find_last_of("/\\") + 1),          //extract filename from path
-                line,
-                lineContent);   
-
+            if (_logSystem)
+            {
+                _logSystem->NewLog(
+                    std::this_thread::get_id(),
+                    path,          //extract filename from path path.substr(path.find_last_of("/\\") + 1)
+                    line,
+                    std::move(lineContent));
+            }
             _patterns++;
         }
     }
