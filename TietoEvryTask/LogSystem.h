@@ -12,15 +12,16 @@ public:
 
     LogSystem(std::string resultFileName, std::string logFileName);
 
-    std::map<std::thread::id, std::map<std::string, FileContent>> logs;
-
     void NewLog(std::thread::id threadId, std::string fileName, int lineNumber, std::string content);
 
     void MakeLogFile() const;
     void MakeResultFile() const;
 
 private:
+    std::map<std::thread::id, std::map<std::string, FileContent>> logs;
+
     std::string _resultFileName;
     std::string _logFileName;
-    std::mutex _mutex;
+    std::mutex  _mutex;
+
 };

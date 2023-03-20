@@ -131,11 +131,15 @@
     <ClCompile Include="FIleProcessing.cpp" />
     <ClCompile Include="LogSystem.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NotificationQueue.cpp" />
+    <ClCompile Include="TaskSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileProcessing.h" />
     <ClInclude Include="FileContent.h" />
     <ClInclude Include="LogSystem.h" />
+    <ClInclude Include="NotificationQueue.h" />
+    <ClInclude Include="TaskSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
