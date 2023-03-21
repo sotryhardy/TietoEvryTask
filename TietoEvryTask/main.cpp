@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <regex>
 #include "FileProcessing.h"
+#include "TaskSystem.h"
 
 namespace fs = std::filesystem;
 
@@ -70,14 +71,21 @@ int main(int argc, char* argv[])
     LogSystem* logSystem = new LogSystem(resultFileName, logFileName);
 
     FileProcessing fileProcessing(logSystem);
+    {
+        TaskSystem taskSystem(threadsNumber);
+        for (const auto& entry : std::filesystem::recursive_directory_iterator(start_directory))
+        {
+            //if (std::regex_match(entry.path().string().c_str(), result, regular))
+            //{
+              //  std::cout << entry.path().string() << std::endl;
 
-    for (const auto& entry : std::filesystem::recursive_directory_iterator(start_directory))
-        //if (std::regex_match(entry.path().string().c_str(), result, regular))
-        //{
-          //  std::cout << entry.path().string() << std::endl;
-
-            fileProcessing.StartProcessing(pattern, entry.path().string());
-        //}
+            taskSystem.async_(
+                [pattern, entry, &fileProcessing]()
+                {
+                    fileProcessing.StartProcessing(pattern, entry.path().string());
+                });
+        }
+    }
     logSystem->MakeLogFile();
     logSystem->MakeResultFile();
     system("PAUSE");

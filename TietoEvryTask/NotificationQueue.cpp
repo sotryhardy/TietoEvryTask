@@ -2,21 +2,20 @@
 
 using lock_t = std::unique_lock<std::mutex>;
 
-bool NotificationQueue::TryPop(std::function<void(std::string pattern, std::string path)>& func)
+bool NotificationQueue::TryPop(std::function<void()>& func)
 {
     lock_t lock(_mutex, std::try_to_lock);
-    if (!lock || _q.empty())
+    if (!lock || _queue.empty())
     {
         return false;
     }
 
-    func = std::move(_q.front());
-    _q.pop_front();
+    func = std::move(_queue.front());
+    _queue.pop_front();
     return true;
 }
 
-template<typename F>
-bool NotificationQueue::TryPush(F&& f)
+bool NotificationQueue::TryPush(std::function<void()>&& f)
 {
     {
         lock_t lock(_mutex, std::try_to_lock);
@@ -24,34 +23,34 @@ bool NotificationQueue::TryPush(F&& f)
         {
             return false;
         }
-        _q.emplace_back(std::forward<F>(f));
+        _queue.emplace_back(std::forward<std::function<void()>>(f));
     }
     _ready.notify_one();
     return true;
 }
 
-bool NotificationQueue::Pop(std::function<void(std::string pattern, std::string path)>& func)
+bool NotificationQueue::Pop(std::function<void()>& func)
 {
     lock_t lock(_mutex);
-    while (_q.empty() && !_done)
+    while (_queue.empty() && !_done)
     {
         _ready.wait(lock);
     }
-    if (_q.empty())
+    if (_queue.empty())
     {
         return false;
     }
-    func = std::move(_q.front());
-    _q.pop_front();
+    func = std::move(_queue.front());
+    _queue.pop_front();
     return true;
 }
 
-template<typename F>
-void NotificationQueue::Push(F&& f)
+
+void NotificationQueue::Push(std::function<void()>&& f)
 {
     {
         lock_t lock(_mutex);
-        _q.emplace_back(std::forward<F>(f));
+        _queue.emplace_back(std::forward<std::function<void()>>(f));
     }
     _ready.notify_all();
 }

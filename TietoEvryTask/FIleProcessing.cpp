@@ -42,3 +42,8 @@ void FileProcessing::StartProcessing(std::string pattern, std::string path)
     }
     _searched++;
 }
+
+Statictic FileProcessing::GetStatistic() const
+{
+    return { (int)_searched, (int)_withPattern , (int)_patterns};
+}

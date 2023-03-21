@@ -1,44 +1,54 @@
 #include "TaskSystem.h"
 #include <functional>
+#include <iostream>
 
 void TaskSystem::run(unsigned int i)
 {
     while (true)
     {
-        std::function<void(std::string pattern, std::string path)> f;
+        std::function<void()> f;
         for (int n = 0; n != _count; n++)
         {
-            if (_q[(i + n) % _count].TryPop(f))
+            if (_queue[(i + n) % _count].TryPop(f))
             {
                 break;
             }
         }
-        if (!f && !_q[i].Pop(f))
+        if (!f && !_queue[i].Pop(f))
         {
             break;
         }
-
-        //f();
+        f();
+        std::cout << "function end" << std::endl;
     }
 }
 
 TaskSystem::TaskSystem(int threadCount)
+    :_queue{ threadCount }
 {
     _count = threadCount;
 }
 
-template<typename F>
- void TaskSystem::async_(F&& f)
+TaskSystem::~TaskSystem()
+{
+    for (auto& thread : _threads)
+    {
+        thread.join();
+    }
+}
+
+
+void TaskSystem::async_(std::function<void()>&& f)
 {
      auto i = _index++;
 
      for (unsigned n = 0; n != _count; n++)
      {
-         if (_q[(i + n) % _count].TryPush(std::forward<F>(f)))
+         if (_queue[(i + n) % _count].TryPush(std::forward<std::function<void()>>(f)))
          {
              return;
          }
      }
 
-     _q[i % _count].Push(std::forward<F>(f));
+     _queue[i % _count].Push(std::forward<std::function<void()>>(f));
 }

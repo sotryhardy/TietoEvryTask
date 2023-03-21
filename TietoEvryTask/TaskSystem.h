@@ -9,8 +9,9 @@ class TaskSystem
 private:
     unsigned int                    _count;
     std::vector<std::thread>        _threads;
-    std::vector<NotificationQueue>  _q;
+    std::vector<NotificationQueue>  _queue;
     std::atomic<unsigned int>       _index = 0;
+
     void run(unsigned int i);
 
 public:
@@ -18,6 +19,6 @@ public:
 
     ~TaskSystem();
 
-    template<typename F>
-    void async_(F&& f);
+    void async_(std::function<void()>&& f);
+
 };
