@@ -36,7 +36,7 @@ void FileProcessing::StartProcessing(std::string pattern, std::string path)
             {
                 _logSystem->NewLog(
                     std::this_thread::get_id(),
-                    path,          //extract filename from path path.substr(path.find_last_of("/\\") + 1)
+                    path,          
                     line,
                     std::move(lineContent));
             }
