@@ -84,7 +84,6 @@ int main(int argc, char* argv[])
             {
                 fileProcessing.StartProcessing(pattern, entry.path().string());
             });
-        //fileProcessing.StartProcessing(pattern, entry.path().string());
     }
 
     while (taskSystem.busy()) {}
