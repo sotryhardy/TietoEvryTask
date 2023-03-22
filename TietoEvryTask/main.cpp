@@ -28,8 +28,10 @@ int main(int argc, char* argv[])
     }
 
     std::string start_directory = ".";
-    std::string resultFileName = "specific_grep.txt";
-    std::string logFileName = "specific_grep.log";
+    std::string resultFileName(argv[0]);
+    resultFileName += ".txt";
+    std::string logFileName(argv[0]);
+    logFileName += ".log";
     std::string pattern;
     int threadsNumber = 4;
 
@@ -77,6 +79,7 @@ int main(int argc, char* argv[])
             {
                 fileProcessing.StartProcessing(pattern, entry.path().string());
             });
+        //fileProcessing.StartProcessing(pattern, entry.path().string());
     }
 
     while (taskSystem.busy()) {}
@@ -98,6 +101,5 @@ int main(int argc, char* argv[])
     std::cout << "Log File: " << logFileName << std::endl;
     std::cout << "Used threads: " << threadsNumber << std::endl;
     std::cout << "Elapsed time: " << static_cast<double>(delta) / CLOCKS_PER_SEC << std::endl;
-
     return 0;
 }

@@ -24,7 +24,7 @@ void LogSystem::MakeLogFile() const
         logFile << id.first << ": ";
         for (const auto& file : id.second)
         {
-            logFile << file.first.substr(file.first.find_last_of("/\\") + 1) << ", ";
+            logFile << file.first.substr(file.first.find_last_of("/\\") + 1) << ", ";           //extract filename from path 
         }
         logFile << '\n';
     }
