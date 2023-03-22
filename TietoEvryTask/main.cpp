@@ -44,17 +44,17 @@ int main(int argc, char* argv[])
             start_directory = argv[++i];
             continue;
         }
-        if (strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--log_file") == 0)
+        else if (strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--log_file") == 0)
         {
             logFileName = argv[++i];
             continue;
         }
-        if (strcmp(argv[i], "-r") == 0 || strcmp(argv[i], "--result_file") == 0)
+        else if (strcmp(argv[i], "-r") == 0 || strcmp(argv[i], "--result_file") == 0)
         {
             resultFileName = argv[++i];
             continue;
         }
-        if (strcmp(argv[i], "-t") == 0 || strcmp(argv[i], "--threads") == 0)
+        else if (strcmp(argv[i], "-t") == 0 || strcmp(argv[i], "--threads") == 0)
         {
             if (!std::regex_match(argv[i + 1], regular))
             {
@@ -62,6 +62,11 @@ int main(int argc, char* argv[])
                 return -1;
             }
             threadsNumber = atoi(argv[++i]); 
+        }
+        else 
+        {
+            std::cout << "Wrong parametrs" << std::endl;
+            return 0;
         }
     }
 
