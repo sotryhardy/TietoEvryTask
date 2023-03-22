@@ -23,7 +23,7 @@ void TaskSystem::run(const unsigned int i)
 }
 
 TaskSystem::TaskSystem(int threadCount)
-    :_queues{ threadCount }
+    :_queues{ (long unsigned int)threadCount }
 {
     _count = threadCount;
 }
