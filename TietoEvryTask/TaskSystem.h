@@ -9,16 +9,18 @@ class TaskSystem
 private:
     unsigned int                    _count;
     std::vector<std::thread>        _threads;
-    std::vector<NotificationQueue>  _queue;
+    std::vector<NotificationQueue>  _queues;
     std::atomic<unsigned int>       _index = 0;
 
     void run(unsigned int i);
 
 public:
     TaskSystem(int threadCount);
-
     ~TaskSystem();
 
+    void Start();
     void async_(std::function<void()>&& f);
+    void Stop();
+    bool busy();
 
 };

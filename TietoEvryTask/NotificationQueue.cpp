@@ -63,3 +63,8 @@ void NotificationQueue::Done()
     }
     _ready.notify_all();
 }
+
+bool NotificationQueue::empty() const
+{
+    return _queue.empty();
+}

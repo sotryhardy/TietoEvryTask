@@ -13,7 +13,7 @@ void FileProcessing::StartProcessing(std::string pattern, std::string path)
     std::ifstream  file;
 
     file.open(path, std::ios::in);
-    
+
     if (!file) {
         return;
     }
@@ -27,7 +27,10 @@ void FileProcessing::StartProcessing(std::string pattern, std::string path)
         if (lineContent.find(pattern) != std::string::npos)
         {
             if (!this_same_file)
+            {
                 _withPattern++;
+                this_same_file = true;
+            }
 
             if (_logSystem)
             {
@@ -45,5 +48,5 @@ void FileProcessing::StartProcessing(std::string pattern, std::string path)
 
 Statictic FileProcessing::GetStatistic() const
 {
-    return { (int)_searched, (int)_withPattern , (int)_patterns};
+    return { (int)_searched, (int)_withPattern , (int)_patterns };
 }

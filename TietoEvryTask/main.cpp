@@ -10,7 +10,7 @@ namespace fs = std::filesystem;
 
 int main(int argc, char* argv[])
 {
-
+    const clock_t start = clock();
     if (argc == 1)
     {
         std::cout << "The program searches for <pattern> in the files in the given directory" << std::endl;
@@ -18,6 +18,12 @@ int main(int argc, char* argv[])
         std::cout << "-l or --log_file: name of the log file. Default value = specific_grep.log" << std::endl;
         std::cout << "-r or --result_file: name of the file where result is given. Default value = specific_grep.txt" << std::endl;
         std::cout << "-t or --threads: number of threads in the pool. Default value = 4" << std::endl;
+        return 0;
+    }
+
+    if (argc % 2)
+    {
+        std::cout << "Wrong parametrs" << std::endl;
         return 0;
     }
 
@@ -48,46 +54,50 @@ int main(int argc, char* argv[])
         }
         if (strcmp(argv[i], "-t") == 0 || strcmp(argv[i], "--threads") == 0)
         {
-            if (!std::regex_match(argv[i + 1], regular) )
+            if (!std::regex_match(argv[i + 1], regular))
             {
                 std::cout << "Wrong value for thread number";
                 return -1;
             }
-            threadsNumber = atoi(argv[++i]); // std::strtol(argv[++i],)
+            threadsNumber = atoi(argv[++i]); 
         }
     }
 
     pattern = argv[argc - 1];
-
-
-    //std::regex regular(".*" "\\." ".*"); /* ".*" "[^\]$");*/
-
-    //std::regex regular("([\\w-]+)" "(\\.)" "([\\w-]+)");
-    //.substr(entry.path().string().find_last_of("/\\") + 1)
-    std::cmatch result;
-
-
-
     LogSystem* logSystem = new LogSystem(resultFileName, logFileName);
 
     FileProcessing fileProcessing(logSystem);
-    {
-        TaskSystem taskSystem(threadsNumber);
-        for (const auto& entry : std::filesystem::recursive_directory_iterator(start_directory))
-        {
-            //if (std::regex_match(entry.path().string().c_str(), result, regular))
-            //{
-              //  std::cout << entry.path().string() << std::endl;
 
-            taskSystem.async_(
-                [pattern, entry, &fileProcessing]()
-                {
-                    fileProcessing.StartProcessing(pattern, entry.path().string());
-                });
-        }
+    TaskSystem taskSystem(threadsNumber);
+    taskSystem.Start();
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(start_directory))
+    {
+        taskSystem.async_(
+            [pattern, entry, &fileProcessing]()
+            {
+                fileProcessing.StartProcessing(pattern, entry.path().string());
+            });
     }
+
+    while (taskSystem.busy()) {}
+
+    taskSystem.Stop();
+
     logSystem->MakeLogFile();
     logSystem->MakeResultFile();
-    system("PAUSE");
+
+    Statictic stats = fileProcessing.GetStatistic();
+
+    clock_t end = clock();
+    clock_t delta = end - start;
+    
+    std::cout << "Searched files: " << stats.searched << std::endl;
+    std::cout << "Files with pattern: " << stats.withPattern << std::endl;
+    std::cout << "Patterns number: " << stats.patterns_number << std::endl;
+    std::cout << "Result file: " << resultFileName << std::endl;
+    std::cout << "Log File: " << logFileName << std::endl;
+    std::cout << "Used threads: " << threadsNumber << std::endl;
+    std::cout << "Elapsed time: " << static_cast<double>(delta) / CLOCKS_PER_SEC << std::endl;
+
     return 0;
 }

@@ -2,41 +2,36 @@
 #include <functional>
 #include <iostream>
 
-void TaskSystem::run(unsigned int i)
+void TaskSystem::run(const unsigned int i)
 {
     while (true)
     {
         std::function<void()> f;
         for (int n = 0; n != _count; n++)
         {
-            if (_queue[(i + n) % _count].TryPop(f))
+            if (_queues[(i + n) % _count].TryPop(f))
             {
                 break;
             }
         }
-        if (!f && !_queue[i].Pop(f))
+        if (!f && !_queues[i].Pop(f))
         {
             break;
         }
         f();
-        std::cout << "function end" << std::endl;
     }
 }
 
 TaskSystem::TaskSystem(int threadCount)
-    :_queue{ threadCount }
+    :_queues{ threadCount }
 {
     _count = threadCount;
 }
 
 TaskSystem::~TaskSystem()
 {
-    for (auto& thread : _threads)
-    {
-        thread.join();
-    }
-}
 
+}
 
 void TaskSystem::async_(std::function<void()>&& f)
 {
@@ -44,11 +39,47 @@ void TaskSystem::async_(std::function<void()>&& f)
 
      for (unsigned n = 0; n != _count; n++)
      {
-         if (_queue[(i + n) % _count].TryPush(std::forward<std::function<void()>>(f)))
+         if (_queues[(i + n) % _count].TryPush(std::forward<std::function<void()>>(f)))
          {
              return;
          }
      }
 
-     _queue[i % _count].Push(std::forward<std::function<void()>>(f));
+     _queues[i % _count].Push(std::forward<std::function<void()>>(f));
+}
+
+void TaskSystem::Start()
+{
+    _threads.resize(_count);
+    for (int i = 0; i < _count; i++) 
+    {
+        _threads.at(i) = std::thread([i, this]()
+            {
+                run(i); 
+            });
+    }
+}
+
+void TaskSystem::Stop()
+{
+    for (auto& queue : _queues)
+    {
+        queue.Done();
+    }
+    for (auto& thread : _threads)
+    {
+        thread.join();
+    }
+}
+
+bool TaskSystem::busy()
+{
+    for (auto& queue : _queues)
+    {
+        if (!queue.empty())
+        {
+            return true;
+        }
+    }
+    return false;
 }

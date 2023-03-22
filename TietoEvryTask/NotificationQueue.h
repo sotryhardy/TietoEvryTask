@@ -6,7 +6,7 @@
 class NotificationQueue
 {
 private:
-    std::deque<std::function<void()>>  _queue;
+    std::deque<std::function<void()>>                                       _queue;
     bool                                                                    _done = false;
     std::mutex                                                              _mutex;
     std::condition_variable                                                 _ready;
@@ -20,4 +20,6 @@ public:
 
     void Push(std::function<void()>&& f);
     void Done();
+
+    bool empty() const;
 };
