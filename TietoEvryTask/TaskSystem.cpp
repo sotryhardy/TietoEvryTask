@@ -9,7 +9,7 @@ void TaskSystem::run(const unsigned int i)
         std::function<void()> f;
         for (int n = 0; n != _count; n++)
         {
-            if (_queues[(i + n) % _count].TryPop(f))
+            if (_queues[(i + n) % _count].TryPop(f))            // tasks stealing 
             {
                 break;
             }
@@ -39,7 +39,7 @@ void TaskSystem::async_(std::function<void()>&& f)
 
      for (unsigned n = 0; n != _count; n++)
      {
-         if (_queues[(i + n) % _count].TryPush(std::forward<std::function<void()>>(f)))
+         if (_queues[(i + n) % _count].TryPush(std::forward<std::function<void()>>(f)))         //if some thread now is working with some queue we will try to push into another one queue
          {
              return;
          }
